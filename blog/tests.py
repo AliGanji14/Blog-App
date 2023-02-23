@@ -72,5 +72,5 @@ class TestBlog(TestCase):
         self.assertEqual(Post.objects.last().body, "Update body")
 
     def test_post_deleteview(self):
-        response = self.client.get(reverse("post_delete", args="1"))
-        self.assertEqual(response.status_code, 200)
+        response = self.client.post(reverse("post_delete", args="1"))
+        self.assertEqual(response.status_code, 302)
