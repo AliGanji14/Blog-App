@@ -20,7 +20,6 @@ class TestBlog(TestCase):
         self.assertEqual(self.post.title, "A good title")
         self.assertEqual(self.post.body, "Nice body content")
         self.assertEqual(self.post.author.username, "testuser")
-        self.assertEqual(self.user.username, "testuser")
         self.assertEqual(str(self.post), "A good title")
         self.assertEqual(self.post.get_absolute_url(), "/post/1/")
 
@@ -39,8 +38,8 @@ class TestBlog(TestCase):
         self.assertTemplateUsed(response, "blog/home.html")
 
     def test_post_detailview(self):
-        response = self.client.get(reverse("post_detail", args=[self.post.pk]))
-        no_response = self.client.get("/post/1000/")
+        response = self.client.get(reverse("post_detail", kargs={"pk":self.post.pk}))
+        no_response = self.client.get("/post/100000/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(no_response.status_code, 404)
         self.assertContains(response, "A good title")
@@ -49,11 +48,7 @@ class TestBlog(TestCase):
     def test_post_createview(self):
         response = self.client.post(
             reverse("post_new"),
-            {
-                "title": "New title",
-                "body": "New text",
-                "author": self.user.id
-            },
+            {"title": "New title", "body": "New text", "author": self.user.id},
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Post.objects.last().title, "New title")
